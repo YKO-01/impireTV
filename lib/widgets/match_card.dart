@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import '../models/match.dart';
 import '../theme/app_theme.dart';
+import 'glass_card.dart';
 
 class MatchCard extends StatelessWidget {
   final Match match;
@@ -27,166 +28,228 @@ class MatchCard extends StatelessWidget {
         status?.short == '1H' ||
         status?.short == '2H';
 
-    return Card(
+    return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // League info
-              if (league != null)
-                Row(
-                  children: [
-                    if (league.logo != null)
-                      CachedNetworkImage(
+      padding: const EdgeInsets.all(20),
+      onTap: onTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // League info
+          if (league != null)
+            Row(
+              children: [
+                if (league.logo != null)
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: AppTheme.thinLine),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6),
+                      child: CachedNetworkImage(
                         imageUrl: league.logo!,
-                        width: 20,
-                        height: 20,
-                        errorWidget: (context, url, error) => const Icon(Icons.sports_soccer, size: 20),
-                      ),
-                    if (league.logo != null) const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        league.name ?? 'Unknown League',
-                        style: theme.textTheme.titleSmall,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.sports_soccer_outlined,
+                          size: 16,
+                          color: AppTheme.secondaryGray,
+                        ),
                       ),
                     ),
-                    if (isLive)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppTheme.softRed,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'LIVE',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                  ],
+                  ),
+                if (league.logo != null) const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    league.name ?? 'Unknown League',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: AppTheme.secondaryGray,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              const SizedBox(height: 12),
-              // Teams and score
-              if (teams != null)
-                Row(
-                  children: [
-                    // Home team
-                    Expanded(
-                      child: Column(
-                        children: [
-                          if (teams.home?.logo != null)
-                            CachedNetworkImage(
+                if (isLive)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.softRed,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      'LIVE',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: AppTheme.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          const SizedBox(height: 20),
+          // Teams and score
+          if (teams != null)
+            Row(
+              children: [
+                // Home team
+                Expanded(
+                  child: Column(
+                    children: [
+                      if (teams.home?.logo != null)
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppTheme.thinLine),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
                               imageUrl: teams.home!.logo!,
-                              width: 50,
-                              height: 50,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.sports_soccer, size: 50),
-                            )
-                          else
-                            const Icon(Icons.sports_soccer, size: 50),
-                          const SizedBox(height: 8),
-                          Text(
-                            teams.home?.name ?? 'Home Team',
-                            style: theme.textTheme.titleMedium,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Score
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        children: [
-                          if (match.score?.fulltime?.home != null &&
-                              match.score?.fulltime?.away != null)
-                            Text(
-                              '${match.score!.fulltime!.home} - ${match.score!.fulltime!.away}',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: isLive ? AppTheme.softRed : null,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.sports_soccer_outlined,
+                                size: 40,
+                                color: AppTheme.secondaryGray,
                               ),
-                            )
-                          else if (match.goals?.home != null && match.goals?.away != null)
-                            Text(
-                              '${match.goals!.home} - ${match.goals!.away}',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: isLive ? AppTheme.softRed : null,
-                              ),
-                            )
-                          else
-                            Text(
-                              status?.short ?? 'TBD',
-                              style: theme.textTheme.titleMedium,
                             ),
-                          const SizedBox(height: 4),
-                          if (fixture?.date != null)
-                            Text(
-                              _formatDate(fixture!.date!),
-                              style: theme.textTheme.bodySmall,
-                            ),
-                        ],
-                      ),
-                    ),
-                    // Away team
-                    Expanded(
-                      child: Column(
-                        children: [
-                          if (teams.away?.logo != null)
-                            CachedNetworkImage(
-                              imageUrl: teams.away!.logo!,
-                              width: 50,
-                              height: 50,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.sports_soccer, size: 50),
-                            )
-                          else
-                            const Icon(Icons.sports_soccer, size: 50),
-                          const SizedBox(height: 8),
-                          Text(
-                            teams.away?.name ?? 'Away Team',
-                            style: theme.textTheme.titleMedium,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              const SizedBox(height: 12),
-              // Venue
-              if (fixture?.venue != null)
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 16, color: AppTheme.lightGray),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        '${fixture!.venue!.name ?? ''}, ${fixture.venue!.city ?? ''}',
-                        style: theme.textTheme.bodySmall,
-                        maxLines: 1,
+                        )
+                      else
+                        Icon(
+                          Icons.sports_soccer_outlined,
+                          size: 60,
+                          color: AppTheme.secondaryGray,
+                        ),
+                      const SizedBox(height: 12),
+                      Text(
+                        teams.home?.name ?? 'Home Team',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: AppTheme.white,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-            ],
-          ),
-        ),
+                // Score
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      if (match.score?.fulltime?.home != null &&
+                          match.score?.fulltime?.away != null)
+                        Text(
+                          '${match.score!.fulltime!.home} - ${match.score!.fulltime!.away}',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isLive ? AppTheme.softRed : AppTheme.neonYellow,
+                            fontSize: 24,
+                          ),
+                        )
+                      else if (match.goals?.home != null && match.goals?.away != null)
+                        Text(
+                          '${match.goals!.home} - ${match.goals!.away}',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isLive ? AppTheme.softRed : AppTheme.neonYellow,
+                            fontSize: 24,
+                          ),
+                        )
+                      else
+                        Text(
+                          status?.short ?? 'TBD',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: AppTheme.secondaryGray,
+                          ),
+                        ),
+                      const SizedBox(height: 8),
+                      if (fixture?.date != null)
+                        Text(
+                          _formatDate(fixture!.date!),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: AppTheme.secondaryGray,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Away team
+                Expanded(
+                  child: Column(
+                    children: [
+                      if (teams.away?.logo != null)
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppTheme.thinLine),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: CachedNetworkImage(
+                              imageUrl: teams.away!.logo!,
+                              fit: BoxFit.cover,
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.sports_soccer_outlined,
+                                size: 40,
+                                color: AppTheme.secondaryGray,
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        Icon(
+                          Icons.sports_soccer_outlined,
+                          size: 60,
+                          color: AppTheme.secondaryGray,
+                        ),
+                      const SizedBox(height: 12),
+                      Text(
+                        teams.away?.name ?? 'Away Team',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: AppTheme.white,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: 16),
+          // Venue
+          if (fixture?.venue != null)
+            Row(
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  size: 16,
+                  color: AppTheme.secondaryGray,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    '${fixture!.venue!.name ?? ''}, ${fixture.venue!.city ?? ''}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.secondaryGray,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+        ],
       ),
     );
   }

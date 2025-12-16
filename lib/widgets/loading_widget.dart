@@ -13,13 +13,15 @@ class LoadingWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.brightBlue),
+            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.neonYellow),
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             Text(
               message!,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppTheme.secondaryGray,
+              ),
             ),
           ],
         ],
@@ -27,5 +29,3 @@ class LoadingWidget extends StatelessWidget {
     );
   }
 }
-
-

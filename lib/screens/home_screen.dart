@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/matches_provider.dart';
+import '../widgets/custom_bottom_nav.dart';
 import 'matches_screen.dart';
 import 'more_screen.dart';
 
@@ -28,14 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
       MatchesScreen(
         title: 'Today\'s Matches',
         fetchFunction: () => matchesProvider.fetchTodayMatches(),
+        showDateFilters: true,
+        initialFilter: MatchDateFilter.today,
       ),
       MatchesScreen(
         title: 'Yesterday\'s Matches',
         fetchFunction: () => matchesProvider.fetchYesterdayMatches(),
+        showDateFilters: true,
+        initialFilter: MatchDateFilter.yesterday,
       ),
       MatchesScreen(
         title: 'Tomorrow\'s Matches',
         fetchFunction: () => matchesProvider.fetchTomorrowMatches(),
+        showDateFilters: true,
+        initialFilter: MatchDateFilter.tomorrow,
       ),
       const MoreScreen(),
     ];
@@ -48,36 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _currentIndex,
         children: _screens,
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: CustomBottomNav(
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.live_tv),
-            label: 'Live',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.today),
-            label: 'Today',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Yesterday',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Tomorrow',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_horiz),
-            label: 'More',
-          ),
-        ],
       ),
     );
   }
